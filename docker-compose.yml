@@ -1,0 +1,23 @@
+services:
+  backend:
+    build:
+      context: ./back
+      dockerfile: Dockerfile.backend
+    volumes:
+      - ./back:/app
+      - ./back/db.sqlite3:/app/db.sqlite3  # Montar o volume do banco de dados
+    ports:
+      - "8000:8000"  # Mapear a porta do contêiner para o host
+    environment:
+      - DJANGO_SETTINGS_MODULE=back.settings
+    command: python manage.py runserver
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "8888:8888"  # Mapeia a porta do contêiner para a porta do host
+    depends_on:
+      - backend  # Dependência do serviço backend
+    command: npm run dev:node
